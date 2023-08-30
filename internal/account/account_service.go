@@ -15,7 +15,7 @@ func NewAccountService(db *gorm.DB) *AccountService {
 	}
 }
 
-func (s *AccountService) Getaccounts() ([]entity.Account, error) {
+func (s *AccountService) GetAccounts() ([]entity.Account, error) {
 	var accounts []entity.Account
 	err := s.db.Find(&accounts).Error
 	if err != nil {
