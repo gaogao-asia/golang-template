@@ -21,15 +21,15 @@ func NewV1(api *gin.RouterGroup, DB connection.Conn) *newRouterParams {
 }
 
 func (r *newRouterParams) Register() {
-	r.registerProduct()
+	r.registerAccount()
 }
 
-func (r *newRouterParams) registerProduct() {
+func (r *newRouterParams) registerAccount() {
 	accountHandler := di.InitAccountHandler(r.Conn.DB)
 
-	product := r.v1.Group("/accounts")
+	account := r.v1.Group("/accounts")
 	{
-		product.GET("", accountHandler.GetAccounts)
-		product.POST("", accountHandler.CreateAccount)
+		account.GET("", accountHandler.GetAccounts)
+		account.POST("", accountHandler.CreateAccount)
 	}
 }
