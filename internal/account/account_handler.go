@@ -19,7 +19,7 @@ func NewAccountHandler(accountSrv *AccountService) *AccountHandler {
 }
 
 func (h *AccountHandler) GetAccounts(c *gin.Context) {
-	accounts, err := h.accountSrv.Getaccounts()
+	accounts, err := h.accountSrv.GetAccounts()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			response.ResponseBody{
