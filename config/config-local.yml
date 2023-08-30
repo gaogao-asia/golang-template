@@ -1,0 +1,9 @@
+server:
+  port: ':8000'
+  name: 'gotemplate'
+database:
+  postgres:
+    host: 'localhost'
+    port: 5431
+    user: 'template'
+    dbname: 'templatedb'

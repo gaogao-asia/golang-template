@@ -1,0 +1,24 @@
+{
+    "go.testEnvFile": "${workspaceFolder}/.env",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 54321,
+            "driver": "PostgreSQL",
+            "name": "siro",
+            "group": "sero",
+            "database": "sirodb",
+            "username": "seroio"
+        }
+    ],
+    "sonarlint.connectedMode.project": {
+        "connectionId": "http-localhost-9111-",
+        "projectKey": "siro.reception"
+    },
+    "workbench.colorCustomizations": {
+        "editor.selectionBackground": "#d2084e",
+        "editor.selectionHighlightBackground": "#d2084e"
+    },
+}
+  

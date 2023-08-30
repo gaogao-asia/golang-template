@@ -1,71 +1,28 @@
 package main
 
 import (
-	"fmt"
+	"flag"
+	"log"
+	"os"
 
-	"github.com/gaogao-asia/golang-template/internal/dto"
-	"github.com/gaogao-asia/golang-template/internal/entity"
-	"github.com/gaogao-asia/golang-template/pkg/connection"
-	"github.com/gin-gonic/gin"
+	"github.com/gaogao-asia/golang-template/config"
+	"github.com/gaogao-asia/golang-template/internal/server"
 )
 
 func main() {
-	conn := connection.GetConnection()
+	// Load configuration
+	configPath := flag.String("config", "./config", "config folder path")
+	flag.Parse()
 
-	r := gin.Default()
-	r.GET("/accounts", func(c *gin.Context) {
-		// get all account from database
-		var accounts []entity.Account
-		err := conn.Find(&accounts).Error
-		if err != nil {
-			panic(err)
-		}
+	log.Printf("ENV: %s", os.Getenv("APPENV"))
+	log.Printf("Config path: %s", *configPath)
 
-		fmt.Println("all account: ", accounts)
+	cfg, err := config.LoadConfig(*configPath)
+	if err != nil {
+		log.Fatalf("Config error: %s", err)
+	}
+	config.AppConfig = cfg
 
-		var resp []dto.GetAccountResponse
-		for _, account := range accounts {
-			resp = append(resp, dto.GetAccountResponse{
-				ID:    account.ID,
-				Name:  account.Name,
-				Email: account.Email,
-			})
-		}
-
-		c.JSON(200, resp)
-	})
-
-	r.POST("/accounts", func(c *gin.Context) {
-		req := dto.CreateAccountRequest{}
-		err := c.ShouldBindJSON(&req)
-		if err != nil {
-			c.JSON(400, gin.H{
-				"msg_code": "CREATE_ACCOUNT_REQUEST_INVALID",
-				"msg":      err.Error(),
-			})
-			return
-		}
-
-		// create account in database
-		account := entity.Account{
-			Name:  req.Name,
-			Email: req.Email,
-		}
-		err = conn.Create(&account).Error
-		if err != nil {
-			c.JSON(500, gin.H{
-				"msg_code": "CREATE_ACCOUNT_ERROR",
-				"msg":      err.Error(),
-			})
-			return
-		}
-
-		c.JSON(200, dto.GetAccountResponse{
-			ID:    account.ID,
-			Name:  account.Name,
-			Email: account.Email,
-		})
-	})
-
-	r.Run(":3011")
+	// Run server
+	server.Run()
 }

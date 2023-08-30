@@ -1,23 +1,33 @@
 package connection
 
 import (
-	"fmt"
-	"os"
+	"log"
 
+	"github.com/gaogao-asia/golang-template/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
-func GetConnection() *gorm.DB {
-	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable"
-	dnsReal := fmt.Sprintf(dsn, "localhost", os.Getenv("POSTGRES_USERNAME"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_DB"),
-		os.Getenv("POSTGRES_PORT"))
-	fmt.Println(dnsReal)
-	db, err := gorm.Open(postgres.Open(dnsReal), &gorm.Config{})
-	if err != nil {
-		return nil
+type Conn struct {
+	DB *gorm.DB
+}
+
+func GetConnection() (Conn, error) {
+	gormConfig := &gorm.Config{
+		SkipDefaultTransaction: false,
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: false,
+		},
 	}
-	return db
+	url := config.AppConfig.Database.Postgres.GetDSN()
+	pgDB, err := gorm.Open(postgres.Open(url), gormConfig)
+	if err != nil {
+		log.Println(err)
+		return Conn{}, err
+	}
+
+	return Conn{
+		DB: pgDB,
+	}, nil
 }
