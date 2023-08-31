@@ -1,29 +1,33 @@
 package connection
 
 import (
-	"fmt"
-	"github.com/joho/godotenv"
 	"log"
-	"os"
 
+	"github.com/gaogao-asia/golang-template/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
-func GetConnection() *gorm.DB {
-	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable"
-	e := godotenv.Load()
-	if e != nil {
-		log.Fatalf("err loading: %v", e)
+type Conn struct {
+	DB *gorm.DB
+}
+
+func GetConnection() (Conn, error) {
+	gormConfig := &gorm.Config{
+		SkipDefaultTransaction: false,
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: false,
+		},
 	}
-	dnsReal := fmt.Sprintf(dsn, "localhost", os.Getenv("POSTGRES_USERNAME"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_DB"),
-		os.Getenv("POSTGRES_PORT"))
-	fmt.Println(dnsReal)
-	db, err := gorm.Open(postgres.Open(dnsReal), &gorm.Config{})
+	url := config.AppConfig.Database.Postgres.GetDSN()
+	pgDB, err := gorm.Open(postgres.Open(url), gormConfig)
 	if err != nil {
-		return nil
+		log.Println(err)
+		return Conn{}, err
 	}
-	return db
+
+	return Conn{
+		DB: pgDB,
+	}, nil
 }
