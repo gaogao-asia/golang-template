@@ -21,13 +21,7 @@ func NewAccountHandler(accountSrv *AccountService) *AccountHandler {
 func (h *AccountHandler) GetAccounts(c *gin.Context) {
 	accounts, err := h.accountSrv.GetAccounts()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,
-			response.ResponseBody{
-				Error: &response.ErrorResponseBody{
-					Code:    "CREATE_ACCOUNT_REQUEST_INVALID",
-					Message: err.Error(),
-				},
-			})
+		response.GeneralError(c, err)
 		return
 	}
 
@@ -51,12 +45,13 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	req := CreateAccountRequest{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.ResponseBody{
-			Error: &response.ErrorResponseBody{
-				Code:    "CREATE_ACCOUNT_REQUEST_INVALID",
-				Message: err.Error(),
-			},
-		})
+		response.GeneralError(c, err)
+		return
+	}
+
+	err = req.Validate()
+	if err != nil {
+		response.GeneralError(c, err)
 		return
 	}
 
@@ -67,13 +62,7 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	}
 	err = h.accountSrv.CreateAccount(&account)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,
-			response.ResponseBody{
-				Error: &response.ErrorResponseBody{
-					Code:    "CREATE_ACCOUNT_ERROR",
-					Message: err.Error(),
-				},
-			})
+		response.GeneralError(c, err)
 		return
 	}
 
