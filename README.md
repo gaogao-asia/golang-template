@@ -14,3 +14,14 @@
 8. Database client
 9. ChatGPT GenieAI
 10. Github Copilot
+
+# Step to run:
+1. Init
+```
+$ make init
+```
+
+2. Run
+```
+$ make run
+```

@@ -72,7 +72,11 @@ type ServerError struct {
 }
 
 func (e ServerError) Error() string {
-	return e.OriginErr.Error()
+	if e.OriginErr == nil {
+		return fmt.Sprintf("error_code: %d, msg_code: %s", e.Code, e.MsgCode)
+	}
+
+	return fmt.Sprintf("error_code: %d, msg_code: %s, origin_err:%s", e.Code, e.MsgCode, e.OriginErr.Error())
 }
 
 func IsServerError(err error) bool {

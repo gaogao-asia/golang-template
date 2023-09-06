@@ -16,8 +16,7 @@ type ResponseBody struct {
 type ErrorResponseBody struct {
 	Code    int    `json:"code,omitempty"`
 	MsgCode string `json:"msg_code,omitempty"`
-	Message string `json:"message,omitempty"`
-	Detail  string `json:"detail,omitempty"`
+	Message string `json:"msg,omitempty"`
 }
 
 func GeneralError(c *gin.Context, err error) {
@@ -29,7 +28,7 @@ func GeneralError(c *gin.Context, err error) {
 		body = ResponseBody{
 			Error: &ErrorResponseBody{
 				Code:    er.Code,
-				Message: er.MsgCode,
+				MsgCode: er.MsgCode,
 			},
 		}
 		filterClientErrorHTTPCode(c, er, body)
@@ -46,7 +45,7 @@ func GeneralError(c *gin.Context, err error) {
 	body = ResponseBody{
 		Error: &ErrorResponseBody{
 			Code:    internalErr.Code,
-			Message: internalErr.MsgCode,
+			MsgCode: internalErr.MsgCode,
 		},
 	}
 
