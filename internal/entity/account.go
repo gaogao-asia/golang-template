@@ -6,3 +6,10 @@ type Account struct {
 	Email string `gorm:"column:email"`
 	Roles string `gorm:"column:roles"`
 }
+
+//go:generate mockery --name AccountService --output ../../mocks
+type AccountService interface {
+	GetAccounts() ([]Account, error)
+
+	CreateAccount(account *Account) error
+}

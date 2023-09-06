@@ -6,17 +6,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type AccountService struct {
+type accountService struct {
 	db *gorm.DB
 }
 
-func NewAccountService(db *gorm.DB) *AccountService {
-	return &AccountService{
+func NewAccountService(db *gorm.DB) *accountService {
+	return &accountService{
 		db: db,
 	}
 }
 
-func (s *AccountService) GetAccounts() ([]entity.Account, error) {
+func (s *accountService) GetAccounts() ([]entity.Account, error) {
 	var accounts []entity.Account
 	err := s.db.Find(&accounts).Error
 	if err != nil {
@@ -30,7 +30,7 @@ func (s *AccountService) GetAccounts() ([]entity.Account, error) {
 	return accounts, nil
 }
 
-func (s *AccountService) CreateAccount(account *entity.Account) error {
+func (s *accountService) CreateAccount(account *entity.Account) error {
 	err := s.db.Create(&account).Error
 	if err != nil {
 		return errs.ErrDBFailed.WithErr(err)

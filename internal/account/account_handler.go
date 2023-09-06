@@ -9,10 +9,10 @@ import (
 )
 
 type AccountHandler struct {
-	accountSrv *AccountService
+	accountSrv entity.AccountService
 }
 
-func NewAccountHandler(accountSrv *AccountService) *AccountHandler {
+func NewAccountHandler(accountSrv entity.AccountService) *AccountHandler {
 	return &AccountHandler{
 		accountSrv: accountSrv,
 	}
