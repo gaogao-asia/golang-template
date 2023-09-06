@@ -2,6 +2,7 @@ package account
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gaogao-asia/golang-template/internal/entity"
 	"github.com/gaogao-asia/golang-template/internal/server/http/response"
@@ -78,6 +79,10 @@ func toAccountsResponse(data entity.Account) AccountResponse {
 		ID:    data.ID,
 		Name:  data.Name,
 		Email: data.Email,
+		Roles: func(roles string) []string {
+			res := strings.Split(roles, ",")
+			return res
+		}(data.Roles),
 	}
 	return res
 }

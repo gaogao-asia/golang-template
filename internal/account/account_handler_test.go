@@ -31,7 +31,7 @@ func TestGetAccounts(t *testing.T) {
 				}, nil)
 				return mockAsrv
 			}(),
-			expected: `{"data":{"accounts":[{"id":1,"name":"Minh","email":"minhtran.dn.it@gmail.com"}]}}`,
+			expected: `{"data":{"accounts":[{"id":1,"name":"Minh","email":"minhtran.dn.it@gmail.com","roles":["admin"]}]}}`,
 			isError:  assert.NoError,
 		},
 	}

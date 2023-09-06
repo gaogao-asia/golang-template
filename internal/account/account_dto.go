@@ -29,13 +29,14 @@ func (s CreateAccountRequest) Validate() error {
 }
 
 type CreateAccountResponse struct {
-	Account AccountResponse `json:"account"`
+	Account AccountResponse `json:"account,omitempty"`
 }
 
 type AccountResponse struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	ID    int64    `json:"id,omitempty"`
+	Name  string   `json:"name,omitempty"`
+	Email string   `json:"email,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 }
 
 type GetAccountsResponse struct {
