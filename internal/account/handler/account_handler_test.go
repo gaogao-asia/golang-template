@@ -1,10 +1,10 @@
-package account
+package handler
 
 import (
 	"net/http"
 	"testing"
 
-	"github.com/gaogao-asia/golang-template/internal/entity"
+	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/mocks"
 	"github.com/gaogao-asia/golang-template/pkg/test"
 	"github.com/stretchr/testify/assert"
@@ -13,15 +13,15 @@ import (
 func TestGetAccounts(t *testing.T) {
 	tests := []struct {
 		name     string
-		aService entity.AccountService
+		aService domain.AccountService
 		expected string
 		isError  assert.ErrorAssertionFunc
 	}{
 		{
 			name: "Get list accounts",
-			aService: func() entity.AccountService {
+			aService: func() domain.AccountService {
 				mockAsrv := mocks.NewAccountService(t)
-				mockAsrv.On("GetAccounts").Return([]entity.Account{
+				mockAsrv.On("GetAccounts").Return([]domain.Account{
 					{
 						ID:    1,
 						Name:  "Minh",

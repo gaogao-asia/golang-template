@@ -1,19 +1,20 @@
-package account
+package handler
 
 import (
 	"net/http"
 	"strings"
 
-	"github.com/gaogao-asia/golang-template/internal/entity"
+	"github.com/gaogao-asia/golang-template/internal/account/dto"
+	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/internal/server/http/response"
 	"github.com/gin-gonic/gin"
 )
 
 type AccountHandler struct {
-	accountSrv entity.AccountService
+	accountSrv domain.AccountService
 }
 
-func NewAccountHandler(accountSrv entity.AccountService) *AccountHandler {
+func NewAccountHandler(accountSrv domain.AccountService) *AccountHandler {
 	return &AccountHandler{
 		accountSrv: accountSrv,
 	}
@@ -27,15 +28,15 @@ func (h *AccountHandler) GetAccounts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.ResponseBody{
-		Data: GetAccountsResponse{
+		Data: dto.GetAccountsResponse{
 			Accounts: toGetAccountsResponse(accounts),
 		},
 	})
 }
 
 // toGetAccountsResponse
-func toGetAccountsResponse(data []entity.Account) []AccountResponse {
-	res := make([]AccountResponse, 0)
+func toGetAccountsResponse(data []*domain.Account) []dto.AccountResponse {
+	res := make([]dto.AccountResponse, 0)
 	for _, v := range data {
 		res = append(res, toAccountsResponse(v))
 	}
@@ -43,7 +44,7 @@ func toGetAccountsResponse(data []entity.Account) []AccountResponse {
 }
 
 func (h *AccountHandler) CreateAccount(c *gin.Context) {
-	req := CreateAccountRequest{}
+	req := dto.CreateAccountRequest{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		response.GeneralError(c, err)
@@ -57,7 +58,7 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	}
 
 	// create account in database
-	account := entity.Account{
+	account := domain.Account{
 		Name:  req.Name,
 		Email: req.Email,
 	}
@@ -68,14 +69,14 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.ResponseBody{
-		Data: CreateAccountResponse{
-			Account: toAccountsResponse(account),
+		Data: dto.CreateAccountResponse{
+			Account: toAccountsResponse(&account),
 		},
 	})
 }
 
-func toAccountsResponse(data entity.Account) AccountResponse {
-	res := AccountResponse{
+func toAccountsResponse(data *domain.Account) dto.AccountResponse {
+	res := dto.AccountResponse{
 		ID:    data.ID,
 		Name:  data.Name,
 		Email: data.Email,

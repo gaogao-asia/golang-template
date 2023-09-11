@@ -1,4 +1,4 @@
-package entity
+package domain
 
 type Account struct {
 	ID    int64  `gorm:"column:id"`
@@ -9,7 +9,14 @@ type Account struct {
 
 //go:generate mockery --name AccountService --output ../../mocks
 type AccountService interface {
-	GetAccounts() ([]Account, error)
+	GetAccounts() ([]*Account, error)
 
 	CreateAccount(account *Account) error
+}
+
+//go:generate mockery --name AccountRepository --output ../../mocks
+type AccountRepository interface {
+	Get() ([]*Account, error)
+
+	Create(account *Account) error
 }

@@ -1,4 +1,4 @@
-package account
+package dto
 
 import "github.com/gaogao-asia/golang-template/pkg/errs"
 
