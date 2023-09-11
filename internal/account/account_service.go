@@ -2,32 +2,39 @@ package account
 
 import (
 	"github.com/gaogao-asia/golang-template/internal/entity"
+	"github.com/gaogao-asia/golang-template/pkg/errs"
 	"gorm.io/gorm"
 )
 
-type AccountService struct {
+type accountService struct {
 	db *gorm.DB
 }
 
-func NewAccountService(db *gorm.DB) *AccountService {
-	return &AccountService{
+func NewAccountService(db *gorm.DB) *accountService {
+	return &accountService{
 		db: db,
 	}
 }
 
-func (s *AccountService) GetAccounts() ([]entity.Account, error) {
+func (s *accountService) GetAccounts() ([]entity.Account, error) {
 	var accounts []entity.Account
 	err := s.db.Find(&accounts).Error
 	if err != nil {
-		return nil, err
+		return nil, errs.ErrDBFailed.WithErr(err)
 	}
+
+	if len(accounts) == 0 {
+		return nil, errs.ErrUserNotExist
+	}
+
 	return accounts, nil
 }
 
-func (s *AccountService) CreateAccount(account *entity.Account) error {
+func (s *accountService) CreateAccount(account *entity.Account) error {
 	err := s.db.Create(&account).Error
 	if err != nil {
-		return err
+		return errs.ErrDBFailed.WithErr(err)
 	}
+
 	return nil
 }

@@ -2,6 +2,7 @@ package account
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gaogao-asia/golang-template/internal/entity"
 	"github.com/gaogao-asia/golang-template/internal/server/http/response"
@@ -9,10 +10,10 @@ import (
 )
 
 type AccountHandler struct {
-	accountSrv *AccountService
+	accountSrv entity.AccountService
 }
 
-func NewAccountHandler(accountSrv *AccountService) *AccountHandler {
+func NewAccountHandler(accountSrv entity.AccountService) *AccountHandler {
 	return &AccountHandler{
 		accountSrv: accountSrv,
 	}
@@ -21,13 +22,7 @@ func NewAccountHandler(accountSrv *AccountService) *AccountHandler {
 func (h *AccountHandler) GetAccounts(c *gin.Context) {
 	accounts, err := h.accountSrv.GetAccounts()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,
-			response.ResponseBody{
-				Error: &response.ErrorResponseBody{
-					Code:    "CREATE_ACCOUNT_REQUEST_INVALID",
-					Message: err.Error(),
-				},
-			})
+		response.GeneralError(c, err)
 		return
 	}
 
@@ -51,12 +46,13 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	req := CreateAccountRequest{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.ResponseBody{
-			Error: &response.ErrorResponseBody{
-				Code:    "CREATE_ACCOUNT_REQUEST_INVALID",
-				Message: err.Error(),
-			},
-		})
+		response.GeneralError(c, err)
+		return
+	}
+
+	err = req.Validate()
+	if err != nil {
+		response.GeneralError(c, err)
 		return
 	}
 
@@ -67,13 +63,7 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	}
 	err = h.accountSrv.CreateAccount(&account)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,
-			response.ResponseBody{
-				Error: &response.ErrorResponseBody{
-					Code:    "CREATE_ACCOUNT_ERROR",
-					Message: err.Error(),
-				},
-			})
+		response.GeneralError(c, err)
 		return
 	}
 
@@ -89,6 +79,10 @@ func toAccountsResponse(data entity.Account) AccountResponse {
 		ID:    data.ID,
 		Name:  data.Name,
 		Email: data.Email,
+		Roles: func(roles string) []string {
+			res := strings.Split(roles, ",")
+			return res
+		}(data.Roles),
 	}
 	return res
 }

@@ -1,0 +1,4 @@
+outpkg: mocks
+case: underscore
+name: "{{.MockName}}.go"
+with-expecter: true
