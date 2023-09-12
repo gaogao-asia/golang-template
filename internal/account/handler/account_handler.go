@@ -7,6 +7,7 @@ import (
 	"github.com/gaogao-asia/golang-template/internal/account/dto"
 	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/internal/server/http/response"
+	"github.com/gaogao-asia/golang-template/pkg/requestbind"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +22,7 @@ func NewAccountHandler(accountSrv domain.AccountService) *AccountHandler {
 }
 
 func (h *AccountHandler) GetAccounts(c *gin.Context) {
-	accounts, err := h.accountSrv.GetAccounts()
+	accounts, err := h.accountSrv.GetAccounts(c.Request.Context())
 	if err != nil {
 		response.GeneralError(c, err)
 		return
@@ -44,8 +45,7 @@ func toGetAccountsResponse(data []*domain.Account) []dto.AccountResponse {
 }
 
 func (h *AccountHandler) CreateAccount(c *gin.Context) {
-	req := dto.CreateAccountRequest{}
-	err := c.ShouldBindJSON(&req)
+	req, err := requestbind.BindJson[dto.CreateAccountRequest](c)
 	if err != nil {
 		response.GeneralError(c, err)
 		return
@@ -61,8 +61,9 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	account := domain.Account{
 		Name:  req.Name,
 		Email: req.Email,
+		Roles: strings.Join(req.Roles, ","),
 	}
-	err = h.accountSrv.CreateAccount(&account)
+	err = h.accountSrv.CreateAccount(c.Request.Context(), &account)
 	if err != nil {
 		response.GeneralError(c, err)
 		return

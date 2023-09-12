@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/pkg/errs"
 	"gorm.io/gorm"
@@ -16,9 +18,9 @@ func NewAccountRepository(db *gorm.DB) *accountRepository {
 	}
 }
 
-func (r *accountRepository) Get() ([]*domain.Account, error) {
+func (r *accountRepository) Get(ctx context.Context) ([]*domain.Account, error) {
 	var accounts []*domain.Account
-	err := r.DB.Find(&accounts).Error
+	err := r.DB.Debug().WithContext(ctx).Find(&accounts).Error
 	if err != nil {
 		return nil, errs.ErrDBFailed.WithErr(err)
 	}
@@ -29,8 +31,8 @@ func (r *accountRepository) Get() ([]*domain.Account, error) {
 	return accounts, nil
 }
 
-func (r *accountRepository) Create(account *domain.Account) error {
-	err := r.DB.Create(&account).Error
+func (r *accountRepository) Create(ctx context.Context, account *domain.Account) error {
+	err := r.DB.Debug().Create(&account).Error
 	if err != nil {
 		return errs.ErrDBFailed.WithErr(err)
 	}

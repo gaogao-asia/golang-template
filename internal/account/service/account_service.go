@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/gaogao-asia/golang-template/internal/domain"
 )
 
@@ -14,8 +16,8 @@ func NewAccountService(accountRepo domain.AccountRepository) *accountService {
 	}
 }
 
-func (s *accountService) GetAccounts() ([]*domain.Account, error) {
-	accounts, err := s.accountRepo.Get()
+func (s *accountService) GetAccounts(ctx context.Context) ([]*domain.Account, error) {
+	accounts, err := s.accountRepo.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -23,8 +25,8 @@ func (s *accountService) GetAccounts() ([]*domain.Account, error) {
 	return accounts, nil
 }
 
-func (s *accountService) CreateAccount(account *domain.Account) error {
-	err := s.accountRepo.Create(account)
+func (s *accountService) CreateAccount(ctx context.Context, account *domain.Account) error {
+	err := s.accountRepo.Create(ctx, account)
 	if err != nil {
 		return err
 	}

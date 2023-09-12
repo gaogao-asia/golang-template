@@ -1,5 +1,9 @@
 package domain
 
+import (
+	"context"
+)
+
 type Account struct {
 	ID    int64  `gorm:"column:id"`
 	Name  string `gorm:"column:name"`
@@ -9,14 +13,14 @@ type Account struct {
 
 //go:generate mockery --name AccountService --output ../../mocks
 type AccountService interface {
-	GetAccounts() ([]*Account, error)
+	GetAccounts(ctx context.Context) ([]*Account, error)
 
-	CreateAccount(account *Account) error
+	CreateAccount(ctx context.Context, acc *Account) error
 }
 
 //go:generate mockery --name AccountRepository --output ../../mocks
 type AccountRepository interface {
-	Get() ([]*Account, error)
+	Get(ctx context.Context) ([]*Account, error)
 
-	Create(account *Account) error
+	Create(ctx context.Context, acc *Account) error
 }

@@ -3,7 +3,7 @@ $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 
 init:
 	docker compose -f starter/docker-compose.yaml up -d
-	go install github.com/vektra/mockery/v3@latest
+	go install github.com/vektra/mockery/v2@latest
 init/down:
 	docker compose -f starter/docker-compose.yaml down
 run:
