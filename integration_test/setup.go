@@ -18,10 +18,6 @@ import (
 )
 
 var (
-	HardCodePassword = "123456"
-)
-
-var (
 	Conn    connection.Conn
 	BaseURL string
 	Engine  *gin.Engine
