@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/gaogao-asia/golang-template/internal/domain"
+	"github.com/gaogao-asia/golang-template/pkg/log"
+	"github.com/gaogao-asia/golang-template/pkg/tracing"
 )
 
 type accountService struct {
@@ -16,8 +18,11 @@ func NewAccountService(accountRepo domain.AccountRepository) domain.AccountServi
 	}
 }
 
-func (s *accountService) GetAccounts(ctx context.Context) ([]*domain.Account, error) {
-	accounts, err := s.accountRepo.Get(ctx)
+func (s *accountService) GetAccounts(ctx context.Context) (accounts []*domain.Account, err error) {
+	ctx, span := tracing.Start(ctx, nil)
+	defer span.End(ctx, log.Print{"accounts": &accounts})
+
+	accounts, err = s.accountRepo.Get(ctx)
 	if err != nil {
 		return nil, err
 	}

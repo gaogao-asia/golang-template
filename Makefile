@@ -5,8 +5,22 @@ init:
 	docker compose -f starter/docker-compose.yaml up -d
 	go install github.com/vektra/mockery/v2@latest
 	go install github.com/google/wire/cmd/wire@latest
+	if ! docker network inspect apm >/dev/null 2>&1; then \
+        docker network create apm; \
+    fi
+	if ! docker plugin inspect loki &> /dev/null; then \
+  		docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions; \
+	fi
+	docker-compose -f ./starter/monitor/docker-compose.yaml up --build -d 
+	docker image prune --force
+	docker system prune --volumes --force
+
 init/down:
 	docker compose -f starter/docker-compose.yaml down
+	docker-compose -f ./starter/monitor/docker-compose.yaml down
+	docker image prune --force
+	docker system prune --volumes --force
+	
 run:
 	go run cmd/main.go
 

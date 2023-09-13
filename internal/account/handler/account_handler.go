@@ -7,7 +7,9 @@ import (
 	"github.com/gaogao-asia/golang-template/internal/account/dto"
 	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/internal/server/http/response"
+	"github.com/gaogao-asia/golang-template/pkg/log"
 	"github.com/gaogao-asia/golang-template/pkg/requestbind"
+	"github.com/gaogao-asia/golang-template/pkg/tracing"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,7 +24,10 @@ func NewAccountHandler(accountSrv domain.AccountService) *AccountHandler {
 }
 
 func (h *AccountHandler) GetAccounts(c *gin.Context) {
-	accounts, err := h.accountSrv.GetAccounts(c.Request.Context())
+	ctx, span := tracing.Start(c.Request.Context(), nil)
+	defer span.End(ctx, nil)
+
+	accounts, err := h.accountSrv.GetAccounts(ctx)
 	if err != nil {
 		response.GeneralError(c, err)
 		return
@@ -45,6 +50,9 @@ func toGetAccountsResponse(data []*domain.Account) []dto.AccountResponse {
 }
 
 func (h *AccountHandler) CreateAccount(c *gin.Context) {
+	ctx, span := tracing.Start(c.Request.Context(), log.Print{"body": c.Request.Body})
+	defer span.End(ctx, nil)
+
 	req, err := requestbind.BindJson[dto.CreateAccountRequest](c)
 	if err != nil {
 		response.GeneralError(c, err)

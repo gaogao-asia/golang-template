@@ -14,7 +14,8 @@ var (
 var (
 	ErrBadRequest                         = makeClientError(400000, "BAD_REQUEST", nil)
 	ErrCreateNewAccountRequestInvalid     = makeClientError(400001, "CREATE_ACCOUNT_REQUEST_INVALID", nil)
-	ErrCreateNewAccountRequestRoleInvalid = makeClientError(400001, "CREATE_ACCOUNT_REQUEST_ROLE_INVALID", nil)
+	ErrCreateNewAccountRequestRoleInvalid = makeClientError(400002, "CREATE_ACCOUNT_REQUEST_ROLE_INVALID", nil)
+	ErrXRequestIDMissed                   = makeClientError(400003, "X-REQUEST-ID_MISSED", nil)
 
 	ErrUnAuthorized        = makeClientError(401000, "UNAUTHORIZED", nil)
 	ErrAccessTokenExpired  = makeClientError(401001, "ACCESS_TOKEN_EXPIRED", nil)
@@ -28,7 +29,7 @@ var (
 	ErrUserNotExist = makeClientError(404001, "USER_NOT_EXIST", nil)
 
 	ErrInternalServer = makeServerError(500000, "INTERNAL_SERVER_ERROR", nil)
-	ErrDBFailed       = makeServerError(500003, "DB_ERROR", nil)
+	ErrDBFailed       = makeServerError(500001, "DB_ERROR", nil)
 )
 
 type ClientError struct {
