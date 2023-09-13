@@ -12,7 +12,7 @@ type accountRepository struct {
 	DB *gorm.DB
 }
 
-func NewAccountRepository(db *gorm.DB) *accountRepository {
+func NewAccountRepository(db *gorm.DB) domain.AccountRepository {
 	return &accountRepository{
 		DB: db,
 	}

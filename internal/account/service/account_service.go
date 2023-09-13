@@ -10,7 +10,7 @@ type accountService struct {
 	accountRepo domain.AccountRepository
 }
 
-func NewAccountService(accountRepo domain.AccountRepository) *accountService {
+func NewAccountService(accountRepo domain.AccountRepository) domain.AccountService {
 	return &accountService{
 		accountRepo: accountRepo,
 	}

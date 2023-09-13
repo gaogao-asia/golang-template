@@ -4,6 +4,7 @@ $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 init:
 	docker compose -f starter/docker-compose.yaml up -d
 	go install github.com/vektra/mockery/v2@latest
+	go install github.com/google/wire/cmd/wire@latest
 init/down:
 	docker compose -f starter/docker-compose.yaml down
 run:
@@ -30,4 +31,7 @@ integration-test:
 	@echo ""
 	go test ./integration_test/...  -failfast  -count=1
 
-.PHONY: init init/down run mock unit-test
+di:
+	wire ./internal/di/...
+
+.PHONY: init init/down run mock unit-test di
