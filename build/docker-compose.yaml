@@ -1,0 +1,23 @@
+x-logging:
+  &logging
+  driver: loki # shipping stdout to loki. In k8s, we can use fluentbit|promtail instead
+  options:
+    loki-url: "http://localhost:3100/loki/api/v1/push"
+    loki-batch-size: 10485762
+    loki-min-backoff: 1s
+services:
+  gotemplate:
+    logging: *logging
+    image: gotemplate
+    container_name: gotemplate
+    ports:
+      - "8000:8000"
+    environment:
+      - APPENV=CONTAINER
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - apm
+
+networks:
+  apm:
+    external: true

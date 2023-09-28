@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	"os"
 
 	"github.com/gaogao-asia/golang-template/config"
 	"github.com/gaogao-asia/golang-template/internal/server"
+	glog "github.com/gaogao-asia/golang-template/pkg/log"
+	"github.com/gaogao-asia/golang-template/pkg/tracing"
 )
 
 func main() {
@@ -22,7 +25,8 @@ func main() {
 		log.Fatalf("Config error: %s", err)
 	}
 	config.AppConfig = cfg
-
+	glog.InitDev()
+	tracing.InitTracing(context.Background(), "tempo:4317", "golang-template")
 	// Run server
 	server.Run()
 }

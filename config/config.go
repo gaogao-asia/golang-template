@@ -12,7 +12,7 @@ const (
 	// EnvLocal is the local environment
 	EnvLocal = "LOCAL"
 	// EnvContainer is the container environment
-	EnvLocalContainer = "LOCAL_CONTAINER"
+	EnvContainer = "CONTAINER"
 	// EnvDev is the development environment
 	EnvDev = "DEV"
 	// EnvProd is the production environment
@@ -71,7 +71,7 @@ func LoadConfig(path string) (*App, error) {
 		filename = "config-dev.yml"
 	case EnvProd:
 		filename = "config-prod.yml"
-	case EnvLocalContainer:
+	case EnvContainer:
 		filename = "config-container.yml"
 	case "integration-test":
 		filename = "config-integration-test.yml"
@@ -98,6 +98,7 @@ func ViperLoadConfig(fullPath string) (*App, error) {
 	}
 
 	config.Database.Postgres.Password = os.Getenv("POSTGRES_PASSWORD")
+	log.Println("config.Database.Postgres.Password : ", config.Database.Postgres.Password)
 
 	return &config, nil
 }

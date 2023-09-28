@@ -1,6 +1,9 @@
 include .env
 $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 
+OUTPUT ?= $(shell pwd)
+SERVICENAME ?= gotemplate
+
 init:
 	docker compose -f starter/docker-compose.yaml up -d
 	go install github.com/vektra/mockery/v2@latest
@@ -47,5 +50,23 @@ integration-test:
 
 di:
 	wire ./internal/di/...
+
+quickbuild: 
+	@echo ""
+	@echo "> Build docker image"
+	@echo "----------------------------------------"
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ${OUTPUT}/build/${SERVICENAME} ./cmd/*.go
+	docker build --no-cache --platform linux/amd64 -t ${SERVICENAME} -f ${OUTPUT}/build/Dockerfile.quick .
+	@echo ""
+	@echo "> List docker image"
+	@echo "----------------------------------------"
+	@docker images | grep ${SERVICENAME}
+	@echo ""
+
+run/container:
+	@echo "> RUN docker container"
+	cp -f ./.env ./build/ && \
+	docker compose -f ${OUTPUT}/build/docker-compose.yaml up -d
+	# rm -f ${OUTPUT}/build/${SERVICENAME}
 
 .PHONY: init init/down run mock unit-test di

@@ -42,7 +42,7 @@ services:
     command: [ "--config.file=/etc/tempo/config.yml" ]
     networks:
       - apm
- 
+
   loki:
     image: grafana/loki:latest
     container_name: loki
