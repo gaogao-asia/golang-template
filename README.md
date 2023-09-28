@@ -15,7 +15,8 @@
 9. ChatGPT GenieAI
 10. Github Copilot
 
-# Step to run:
+# Step to run
+### RUN via local
 1. Init
 ```
 $ make init
@@ -26,3 +27,26 @@ $ make init
 $ make run
 ```
 
+### RUN via vscode
+1. Init
+```
+$ make init
+```
+2. Run
+`Mac: cmd + f5`
+
+### RUN via container
+1. Init
+```
+$ make init
+```
+
+2. Build
+```
+$ make quickbuild
+```
+
+3. Run
+```
+$ make run/container
+```
