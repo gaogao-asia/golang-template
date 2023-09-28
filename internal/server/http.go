@@ -12,6 +12,7 @@ import (
 func NewRouter(api *gin.RouterGroup, connection connection.Conn) {
 	// Middleware
 	api.Use(middleware.CustomRecovery())
+	api.Use(middleware.TracingMiddleware())
 	api.Use(middleware.RequestIDMiddleware())
 	api.Use(allowAllOrigins())
 

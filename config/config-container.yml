@@ -7,3 +7,6 @@ database:
     port: 5432
     user: 'template'
     dbname: 'templatedb'
+monitor:
+  tempo:
+    endpoint: tempo:4317

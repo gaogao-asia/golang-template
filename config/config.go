@@ -24,6 +24,7 @@ var AppConfig *App
 type App struct {
 	Server   Server   `mapstructure:"server"`
 	Database Database `mapstructure:"database"`
+	Monitor  Monitor  `mapstructure:"monitor"`
 }
 
 type Server struct {
@@ -42,6 +43,14 @@ type Postgres struct {
 	Username string `mapstructure:"user"`
 	Password string
 	Database string `mapstructure:"dbname"`
+}
+
+type Monitor struct {
+	Tempo `mapstructure:"tempo"`
+}
+
+type Tempo struct {
+	Endpoint string `mapstructure:"endpoint"`
 }
 
 func (p Postgres) GetDSN() string {

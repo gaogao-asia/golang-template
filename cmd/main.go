@@ -8,7 +8,7 @@ import (
 
 	"github.com/gaogao-asia/golang-template/config"
 	"github.com/gaogao-asia/golang-template/internal/server"
-	glog "github.com/gaogao-asia/golang-template/pkg/log"
+	logserver "github.com/gaogao-asia/golang-template/pkg/log"
 	"github.com/gaogao-asia/golang-template/pkg/tracing"
 )
 
@@ -24,9 +24,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Config error: %s", err)
 	}
+
 	config.AppConfig = cfg
-	glog.InitDev()
-	tracing.InitTracing(context.Background(), "tempo:4317", "golang-template")
+	logserver.InitDev()
+	tracing.InitTracing(context.Background(), config.AppConfig.Monitor.Endpoint, config.AppConfig.Server.Name)
+
 	// Run server
 	server.Run()
 }
