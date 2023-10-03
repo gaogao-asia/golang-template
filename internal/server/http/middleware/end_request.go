@@ -19,7 +19,7 @@ func EndRequestMiddleware() gin.HandlerFunc {
 		statusCode := c.Writer.Status()
 		body := c.Writer.(*bodyLogWriter).body.String()
 
-		log.InfoCtxNoFuncf(c.Request.Context(), "Start EndRequestMiddleware: status=%d body=%s", statusCode, string(body))
+		log.InfoCtxNoFuncf(c.Request.Context(), "End Request Middleware: status=%d body=%s", statusCode, string(body))
 
 		writer.Flush()
 	}
