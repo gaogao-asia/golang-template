@@ -24,12 +24,12 @@ func RequestIDMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		log.InfoCtxf(c.Request.Context(), "Start request: Add requestID: %s", requestID)
 
-		logPrefix := log.AddRequestIDIntoContext(c.Request.Context(), requestID)
-		r := c.Request.WithContext(logPrefix)
+		ctx := log.AddRequestIDIntoContext(c.Request.Context(), requestID)
+		r := c.Request.WithContext(ctx)
 		c.Request = r
 
+		log.InfoCtxNoFuncf(c.Request.Context(), "Start RequestIDMiddleware")
 		c.Next()
 	}
 }

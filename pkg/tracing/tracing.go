@@ -29,7 +29,7 @@ var conn *grpc.ClientConn
 //
 // - `serviceName“ is name of service, ex: user-service
 func InitTracing() func() {
-	if config.AppConfig.Monitor.OpenTelemetry {
+	if config.AppConfig.Monitor.OpenTelemetry.Enable {
 		return initOpentelemetry()
 	}
 
@@ -102,7 +102,7 @@ func Start(ctx context.Context, params map[string]interface{}) (context.Context,
 		log.InfoCtxNoFuncf(ctx, "Start %s, Function params: %+v", caller.FunctionName, prs)
 	}
 
-	if config.AppConfig.Monitor.OpenTelemetry {
+	if config.AppConfig.Monitor.OpenTelemetry.Enable {
 		return start(ctx, caller.FunctionName)
 	}
 
@@ -116,16 +116,22 @@ func start(ctx context.Context, functionName string) (context.Context, SpanStop)
 	}
 
 	span := trace.SpanFromContext(ctx)
-	traceID := span.SpanContext().TraceID().String()
-	ctx = log.AddTraceIntoContext(ctx, traceID)
+
+	return ctx, SpanStop{span: span, FunctionName: functionName}
+}
+
+func InitStartMiddleware(ctx context.Context, functionName string) (context.Context, SpanStop) {
+	if conn.GetState() == connectivity.Ready {
+		ctx, span := Tracer.Start(ctx, functionName)
+		return ctx, SpanStop{span: span, FunctionName: functionName}
+	}
+
+	span := trace.SpanFromContext(ctx)
 
 	return ctx, SpanStop{span: span, FunctionName: functionName}
 }
 
 func startWithoutOpentelemetry(ctx context.Context, functionName string) (context.Context, SpanStop) {
-	traceID := log.GetTraceIDFromContext(ctx)
-	ctx = log.AddTraceIntoContext(ctx, traceID)
-
 	span := newSpan(ctx, functionName)
 	return ctx, span
 }

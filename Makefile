@@ -55,8 +55,8 @@ quickbuild:
 	@echo ""
 	@echo "> Build docker image"
 	@echo "----------------------------------------"
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ${OUTPUT}/build/${SERVICENAME} ./cmd/*.go
-	docker build --no-cache --platform linux/amd64 -t ${SERVICENAME} -f ${OUTPUT}/build/Dockerfile.quick .
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ${OUTPUT}/build/${SERVICENAME} ./cmd/*.go
+	docker build --no-cache --platform linux/arm64 -t ${SERVICENAME} -f ${OUTPUT}/build/Dockerfile.quick .
 	@echo ""
 	@echo "> List docker image"
 	@echo "----------------------------------------"
@@ -67,6 +67,5 @@ run/container:
 	@echo "> RUN docker container"
 	cp -f ./.env ./build/ && \
 	docker compose -f ${OUTPUT}/build/docker-compose.yaml up -d
-	# rm -f ${OUTPUT}/build/${SERVICENAME}
 
 .PHONY: init init/down run mock unit-test di

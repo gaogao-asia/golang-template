@@ -45,7 +45,7 @@ type Postgres struct {
 }
 
 type Monitor struct {
-	OpenTelemetry bool `mapstructure:"opentelemetry"`
+	OpenTelemetry `mapstructure:"opentelemetry"`
 	Tempo         `mapstructure:"tempo"`
 }
 
