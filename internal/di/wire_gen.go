@@ -13,7 +13,6 @@ import (
 )
 
 // Injectors from account_di.go:
-
 func InitAccountHandler() *handler.AccountHandler {
 	db := initDB()
 	accountRepository := repository.NewAccountRepository(db)

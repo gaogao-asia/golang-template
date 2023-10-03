@@ -30,7 +30,6 @@ type App struct {
 type Server struct {
 	Port string `mapstructure:"port"`
 	Name string `mapstructure:"name"`
-	Env  string `mapstructure:"env"`
 }
 
 type Database struct {
@@ -46,9 +45,13 @@ type Postgres struct {
 }
 
 type Monitor struct {
-	Tempo `mapstructure:"tempo"`
+	OpenTelemetry bool `mapstructure:"opentelemetry"`
+	Tempo         `mapstructure:"tempo"`
 }
 
+type OpenTelemetry struct {
+	Enable bool `mapstructure:"enable"`
+}
 type Tempo struct {
 	Endpoint string `mapstructure:"endpoint"`
 }

@@ -59,9 +59,7 @@ func TestSpanStopStop(t *testing.T) {
 	ctx := context.Background()
 
 	s := SpanStop{
-		caller: log.Caller{
-			FunctionName: "TestSpanStopStop",
-		},
+		FunctionName: "TestSpanStopStop",
 	}
 
 	// Call the Stop method

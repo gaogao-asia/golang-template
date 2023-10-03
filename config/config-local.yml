@@ -8,5 +8,7 @@ database:
     user: 'template'
     dbname: 'templatedb'
 monitor:
+  opentelemetry:
+    enable: false
   tempo:
     endpoint: localhost:4317

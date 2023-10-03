@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	"os"
@@ -27,7 +26,7 @@ func main() {
 
 	config.AppConfig = cfg
 	logserver.InitDev()
-	tracing.InitTracing(context.Background(), config.AppConfig.Monitor.Endpoint, config.AppConfig.Server.Name)
+	tracing.InitTracing()
 
 	// Run server
 	server.Run()

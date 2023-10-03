@@ -2,8 +2,11 @@ package tracing
 
 import (
 	"context"
+	"time"
 
+	"github.com/gaogao-asia/golang-template/config"
 	"github.com/gaogao-asia/golang-template/pkg/log"
+	"github.com/lithammer/shortuuid"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
@@ -25,9 +28,18 @@ var conn *grpc.ClientConn
 // - `gprcOTLPEndpoint` is tempo otlp grpc port without protocol, ex: localhost:4317
 //
 // - `serviceName“ is name of service, ex: user-service
-func InitTracing(ctx context.Context, gprcOTLPEndpoint, serviceName string) func() {
+func InitTracing() func() {
+	if config.AppConfig.Monitor.OpenTelemetry {
+		return initOpentelemetry()
+	}
+
+	return func() {}
+}
+
+func initOpentelemetry() func() {
 	var err error
-	conn, err = grpc.DialContext(ctx, gprcOTLPEndpoint,
+	var ctx = context.Background()
+	conn, err = grpc.DialContext(ctx, config.AppConfig.Monitor.Tempo.Endpoint,
 		// Note the use of insecure transport here. TLS is recommended in production.
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
@@ -44,13 +56,13 @@ func InitTracing(ctx context.Context, gprcOTLPEndpoint, serviceName string) func
 		sdttrace.WithBatcher(exporter),
 		sdttrace.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(serviceName),
+			semconv.ServiceNameKey.String(config.AppConfig.Server.Name),
 		)),
 	)
 
 	otel.SetTracerProvider(tp)
 
-	Tracer = otel.Tracer(serviceName)
+	Tracer = otel.Tracer(config.AppConfig.Server.Name)
 	propagator = propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{})
 
 	return func() {
@@ -90,25 +102,39 @@ func Start(ctx context.Context, params map[string]interface{}) (context.Context,
 		log.InfoCtxNoFuncf(ctx, "Start %s, Function params: %+v", caller.FunctionName, prs)
 	}
 
-	return start(ctx, caller)
+	if config.AppConfig.Monitor.OpenTelemetry {
+		return start(ctx, caller.FunctionName)
+	}
+
+	return startWithoutOpentelemetry(ctx, caller.FunctionName)
 }
 
-func start(ctx context.Context, caller log.Caller) (context.Context, SpanStop) {
+func start(ctx context.Context, functionName string) (context.Context, SpanStop) {
 	if conn.GetState() == connectivity.Ready {
-		ctx, span := Tracer.Start(ctx, caller.FunctionName)
-		return ctx, SpanStop{span: span, caller: caller}
+		ctx, span := Tracer.Start(ctx, functionName)
+		return ctx, SpanStop{span: span, FunctionName: functionName}
 	}
 
 	span := trace.SpanFromContext(ctx)
 	traceID := span.SpanContext().TraceID().String()
 	ctx = log.AddTraceIntoContext(ctx, traceID)
 
-	return ctx, SpanStop{span: span, caller: caller}
+	return ctx, SpanStop{span: span, FunctionName: functionName}
+}
+
+func startWithoutOpentelemetry(ctx context.Context, functionName string) (context.Context, SpanStop) {
+	traceID := log.GetTraceIDFromContext(ctx)
+	ctx = log.AddTraceIntoContext(ctx, traceID)
+
+	span := newSpan(ctx, functionName)
+	return ctx, span
 }
 
 type SpanStop struct {
-	span   trace.Span
-	caller log.Caller
+	span         trace.Span
+	StartTime    time.Time
+	EndTime      time.Time
+	FunctionName string
 }
 
 func (s SpanStop) End(ctx context.Context, params map[string]interface{}) {
@@ -118,9 +144,20 @@ func (s SpanStop) End(ctx context.Context, params map[string]interface{}) {
 
 	// log all params with key-value format
 	prs := log.ToJsonString(params)
-	log.InfoCtxNoFuncf(ctx, "End: %s, Function result:%+v, ", s.caller.FunctionName, prs)
+	log.InfoCtxNoFuncf(ctx, "End: %s, Function result:%+v, ", s.FunctionName, prs)
 }
 
 func (s SpanStop) GetTraceID() string {
-	return s.span.SpanContext().TraceID().String()
+	if s.span != nil {
+		return s.span.SpanContext().TraceID().String()
+	}
+	return shortuuid.New()
+}
+
+func newSpan(ctx context.Context, functionName string) SpanStop {
+	return SpanStop{
+		StartTime:    time.Now(),
+		FunctionName: functionName,
+		span:         nil,
+	}
 }

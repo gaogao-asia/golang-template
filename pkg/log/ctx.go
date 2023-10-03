@@ -2,6 +2,8 @@ package log
 
 import (
 	"context"
+
+	"github.com/lithammer/shortuuid"
 )
 
 type CtxKey string
@@ -35,11 +37,15 @@ func GetTraceIDFromContext(ctx context.Context) string {
 		return pre.TraceID
 	}
 
-	return ""
+	return shortuuid.New()
 }
 
 func AddTraceIntoContext(ctx context.Context, traceID string) context.Context {
 	pre := GetLogPrefix(ctx)
+	if pre.TraceID != "" {
+		return ctx
+	}
+
 	pre.TraceID = traceID
 	return context.WithValue(ctx, CtxLogPrefix, pre)
 }
