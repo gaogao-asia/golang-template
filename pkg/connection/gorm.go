@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm/schema"
 )
 
+var DB *gorm.DB
+
 type Conn struct {
 	DB *gorm.DB
 }
@@ -26,7 +28,7 @@ func GetConnection() (Conn, error) {
 		log.Println(err)
 		return Conn{}, err
 	}
-
+	DB = pgDB
 	return Conn{
 		DB: pgDB,
 	}, nil

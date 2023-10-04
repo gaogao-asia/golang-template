@@ -1,19 +1,17 @@
-package account
+package dto
 
 import "github.com/gaogao-asia/golang-template/pkg/errs"
 
-type Role string
-
 const (
-	RoleAdmin  Role = "admin"
-	RoleUser   Role = "user"
-	RoleUnknow Role = "unknow"
+	RoleAdmin  string = "admin"
+	RoleUser   string = "user"
+	RoleUnknow string = "unknow"
 )
 
 type CreateAccountRequest struct {
-	Name  string `json:"name" binding:"required"`
-	Email string `json:"email" binding:"required,email"`
-	Roles []Role `json:"roles" binding:"required"`
+	Name  string   `json:"name" binding:"required"`
+	Email string   `json:"email" binding:"required,email"`
+	Roles []string `json:"roles" binding:"required"`
 }
 
 func (s CreateAccountRequest) Validate() error {
