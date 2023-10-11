@@ -59,7 +59,7 @@ func (h *AccountHandler) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	err = req.Validate()
+	err = req.Validate(ctx)
 	if err != nil {
 		response.GeneralError(c, err)
 		return

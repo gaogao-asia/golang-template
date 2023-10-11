@@ -1,6 +1,11 @@
 package dto
 
-import "github.com/gaogao-asia/golang-template/pkg/errs"
+import (
+	"context"
+
+	"github.com/gaogao-asia/golang-template/pkg/errs"
+	"github.com/gaogao-asia/golang-template/pkg/tracing"
+)
 
 const (
 	RoleAdmin  string = "admin"
@@ -14,7 +19,10 @@ type CreateAccountRequest struct {
 	Roles []string `json:"roles" binding:"required"`
 }
 
-func (s CreateAccountRequest) Validate() error {
+func (s CreateAccountRequest) Validate(ctx context.Context) error {
+	ctx, span := tracing.Start(ctx, nil)
+	defer span.End(ctx, nil)
+
 	for _, v := range s.Roles {
 		switch v {
 		case RoleAdmin, RoleUser:

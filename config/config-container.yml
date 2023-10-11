@@ -9,6 +9,6 @@ database:
     dbname: 'templatedb'
 monitor:
   opentelemetry:
-    enable: false
+    enable: true
   tempo:
     endpoint: tempo:4317
