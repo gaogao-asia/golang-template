@@ -48,17 +48,31 @@ func Run() {
 
 	<-quit
 
+	timeout := 5
+
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
-	slog.InfoCtxf(ctx, "Graceful shutdown...")
-	if err := srv.Shutdown(ctx); err != nil {
-		slog.Fatalf("Graceful shutdown... err: %v", err)
-	}
+	go func() {
+		slog.InfoCtxf(ctx, "Graceful shutdown...")
+		if err := srv.Shutdown(ctx); err != nil {
+			slog.Fatalf("Graceful shutdown... err: %v", err)
+		}
+	}()
 
 	// catching ctx.Done(). timeout of 5 seconds.
-	<-ctx.Done()
-
+	remainTime := timeout
+loop:
+	for {
+		select {
+		case <-ctx.Done():
+			break loop
+		default:
+			slog.Infof("Waiting for %d seconds...", remainTime)
+			time.Sleep(1 * time.Second)
+			remainTime--
+		}
+	}
 	slog.Infof("Graceful shutdown: good")
 }
