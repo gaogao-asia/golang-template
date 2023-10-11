@@ -59,7 +59,6 @@ func Run() {
 
 	// catching ctx.Done(). timeout of 5 seconds.
 	<-ctx.Done()
-	log.Println("timeout of 5 seconds.")
 
 	slog.Infof("Graceful shutdown: good")
 }

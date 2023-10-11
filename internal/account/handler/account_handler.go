@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gaogao-asia/golang-template/internal/account/dto"
 	"github.com/gaogao-asia/golang-template/internal/domain"
@@ -32,7 +33,7 @@ func (h *AccountHandler) GetAccounts(c *gin.Context) {
 		response.GeneralError(c, err)
 		return
 	}
-
+	time.Sleep(15 * time.Second)
 	c.JSON(http.StatusOK, response.ResponseBody{
 		Data: dto.GetAccountsResponse{
 			Accounts: toGetAccountsResponse(accounts),
