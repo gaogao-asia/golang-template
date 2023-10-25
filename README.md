@@ -15,6 +15,15 @@
 9. ChatGPT GenieAI
 10. Github Copilot
 
+# VS code setting for go test coverage
+```
+"go.coverageDecorator": {
+        "type": "gutter",
+        "coveredHighlightColor": "rgba(64,128,128,0.5)",
+        "coveredGutterStyle": "blockgreen",
+        "uncoveredGutterStyle": "blockred"
+    }
+```
 # Step to run
 ### RUN via local
 1. Init
@@ -50,3 +59,4 @@ $ make quickbuild
 ```
 $ make run/container
 ```
+
