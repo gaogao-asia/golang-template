@@ -32,21 +32,14 @@ mock:
 
 unit-test:
 	@echo ""
-	@echo "--------- Run unittest in HANDLER module ----------"
-	go test -cover -coverprofile=coverage1.out ./internal/handlers/apigateway/handlerimpl/... -count=1
-	@echo ""
-	@echo "--------- Run unittest in USERCASE module ----------"
-	go test -cover -coverprofile=coverage2.out ./internal/usercase/usercaseimpl/... -count=1
-	@echo ""
-	@echo "--------- Run unittest in REPOSITORY module ----------"
-	go test -cover -coverprofile=coverage3.out ./domain/repository/... -count=1
+	@echo "--------- Run unittest in INTENAL module ----------"
+	go test -cover -coverprofile=coverage1.out ./internal/... -count=1
+	
 cover/detail:
 	@echo ""
 	@echo "--------- Show Test Coverage detail ----------"
 	@echo ""
 	go tool cover -func=coverage1.out
-	go tool cover -func=coverage2.out
-	go tool cover -func=coverage3.out
 
 integration-test/db/up:
 	cp -f ./starter/init.sql ./integration_test/init.sql && \
