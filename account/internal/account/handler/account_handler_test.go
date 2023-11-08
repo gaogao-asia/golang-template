@@ -4,12 +4,13 @@ import (
 	"context"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/mocks"
 	"github.com/gaogao-asia/golang-template/pkg/errs"
 	"github.com/gaogao-asia/golang-template/pkg/testutil"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestGetAccounts(t *testing.T) {
@@ -50,7 +51,7 @@ func TestGetAccounts(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := NewAccountHandler(tt.aService)
+			handler := NewAccountHandler(tt.aService, nil)
 
 			ctx, resWriter := testutil.GetGinTestContext()
 			handler.GetAccounts(ctx)
@@ -125,7 +126,7 @@ func TestCreateAccount(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := NewAccountHandler(tt.aService)
+			handler := NewAccountHandler(tt.aService, nil)
 
 			ctx, resWriter := testutil.GetGinTestContextWithBody(tt.requestBody)
 			handler.CreateAccount(ctx)

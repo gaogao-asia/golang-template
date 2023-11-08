@@ -22,9 +22,10 @@ const (
 var AppConfig *App
 
 type App struct {
-	Server   Server   `mapstructure:"server"`
-	Database Database `mapstructure:"database"`
-	Monitor  Monitor  `mapstructure:"monitor"`
+	Server        Server        `mapstructure:"server"`
+	Database      Database      `mapstructure:"database"`
+	Monitor       Monitor       `mapstructure:"monitor"`
+	ProductClient ProductClient `mapstructure:"product_client"`
 }
 
 type Server struct {
@@ -53,6 +54,10 @@ type OpenTelemetry struct {
 	Enable bool `mapstructure:"enable"`
 }
 type Tempo struct {
+	Endpoint string `mapstructure:"endpoint"`
+}
+
+type ProductClient struct {
 	Endpoint string `mapstructure:"endpoint"`
 }
 

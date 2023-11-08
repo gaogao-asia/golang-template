@@ -12,3 +12,5 @@ monitor:
     enable: true
   tempo:
     endpoint: tempo:4317
+product_client:
+  endpoint: productservice:8100

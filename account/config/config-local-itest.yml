@@ -12,3 +12,5 @@ monitor:
     enable: false
   tempo:
     endpoint: tempo:4317
+product_client:
+  endpoint: localhost:8100

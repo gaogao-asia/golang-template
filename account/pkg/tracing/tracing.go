@@ -2,10 +2,9 @@ package tracing
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
-	"github.com/gaogao-asia/golang-template/config"
-	"github.com/gaogao-asia/golang-template/pkg/log"
 	"github.com/lithammer/shortuuid"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -17,6 +16,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/gaogao-asia/golang-template/config"
+	"github.com/gaogao-asia/golang-template/pkg/log"
 )
 
 var Tracer trace.Tracer
@@ -84,12 +86,28 @@ func GetCarrierFromContext(ctx context.Context) propagation.MapCarrier {
 	return carrier
 }
 
+func GetStringCarrierFromCtx(ctx context.Context) string {
+	carrier := GetCarrierFromContext(ctx)
+	bytes, _ := json.Marshal(carrier)
+
+	return string(bytes)
+}
+
 func GetContextFromCarrier(carrier propagation.MapCarrier) context.Context {
 	if carrier == nil {
 		return context.Background()
 	}
 
 	return propagator.Extract(context.Background(), carrier)
+}
+
+func GetContextFromStringCarrier(carrierStr string) context.Context {
+	if carrierStr == "" {
+		return context.Background()
+	}
+	var carrier propagation.MapCarrier
+	_ = json.Unmarshal([]byte(carrierStr), &carrier)
+	return GetContextFromCarrier(carrier)
 }
 
 func Start(ctx context.Context, params map[string]interface{}) (context.Context, SpanStop) {

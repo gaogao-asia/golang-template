@@ -9,6 +9,8 @@ database:
     dbname: 'templatedb'
 monitor:
   opentelemetry:
-    enable: false
+    enable: true
   tempo:
     endpoint: localhost:4317
+product_client:
+  endpoint: localhost:8100

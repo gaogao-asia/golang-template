@@ -48,3 +48,7 @@ type AccountResponse struct {
 type GetAccountsResponse struct {
 	Accounts []AccountResponse `json:"accounts"`
 }
+
+type GetProductRequest struct {
+	ProductID int `json:"product_id"`
+}

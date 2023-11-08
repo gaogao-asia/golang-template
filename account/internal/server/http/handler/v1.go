@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/gaogao-asia/golang-template/internal/di"
 	"github.com/gaogao-asia/golang-template/pkg/connection"
-	"github.com/gin-gonic/gin"
 )
 
 type newRouterParams struct {
@@ -31,5 +32,6 @@ func (r *newRouterParams) registerAccount() {
 	{
 		account.GET("", accountHandler.GetAccounts)
 		account.POST("", accountHandler.CreateAccount)
+		account.GET("/product", accountHandler.GetProduct)
 	}
 }

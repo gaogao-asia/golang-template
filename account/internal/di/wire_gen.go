@@ -10,6 +10,7 @@ import (
 	"github.com/gaogao-asia/golang-template/internal/account/handler"
 	"github.com/gaogao-asia/golang-template/internal/account/repository"
 	"github.com/gaogao-asia/golang-template/internal/account/service"
+	"github.com/gaogao-asia/golang-template/internal/client"
 )
 
 // Injectors from account_di.go:
@@ -17,6 +18,8 @@ func InitAccountHandler() *handler.AccountHandler {
 	db := initDB()
 	accountRepository := repository.NewAccountRepository(db)
 	accountService := service.NewAccountService(accountRepository)
-	accountHandler := handler.NewAccountHandler(accountService)
+
+	productClient := client.NewProductClient()
+	accountHandler := handler.NewAccountHandler(accountService, productClient)
 	return accountHandler
 }

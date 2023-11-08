@@ -5,22 +5,26 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/gaogao-asia/golang-template/internal/account/dto"
+	"github.com/gaogao-asia/golang-template/internal/client"
 	"github.com/gaogao-asia/golang-template/internal/domain"
 	"github.com/gaogao-asia/golang-template/internal/server/http/response"
 	"github.com/gaogao-asia/golang-template/pkg/log"
 	"github.com/gaogao-asia/golang-template/pkg/requestbind"
 	"github.com/gaogao-asia/golang-template/pkg/tracing"
-	"github.com/gin-gonic/gin"
 )
 
 type AccountHandler struct {
-	accountSrv domain.AccountService
+	accountSrv    domain.AccountService
+	productClient client.ProductClient
 }
 
-func NewAccountHandler(accountSrv domain.AccountService) *AccountHandler {
+func NewAccountHandler(accountSrv domain.AccountService, productClient client.ProductClient) *AccountHandler {
 	return &AccountHandler{
-		accountSrv: accountSrv,
+		accountSrv:    accountSrv,
+		productClient: productClient,
 	}
 }
 
@@ -96,4 +100,25 @@ func toAccountsResponse(data *domain.Account) dto.AccountResponse {
 		}(data.Roles),
 	}
 	return res
+}
+
+func (h *AccountHandler) GetProduct(c *gin.Context) {
+	ctx, span := tracing.Start(c.Request.Context(), log.Print{"body": c.Request.Body})
+	defer span.End(ctx, nil)
+	req, err := requestbind.BindJson[dto.GetProductRequest](c)
+	if err != nil {
+		response.GeneralError(c, err)
+		return
+	}
+	product, err := h.productClient.GetLatestProduct(ctx, req.ProductID)
+	if err != nil {
+		response.GeneralError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.ResponseBody{
+		Data: map[string]interface{}{
+			"product": product,
+		},
+	})
 }
