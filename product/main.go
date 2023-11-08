@@ -34,7 +34,7 @@ func (s *product) GetLatestProduct(ctx context.Context, in *pb.LastProductReques
 		return nil, errors.New("id is required")
 	}
 
-	return &pb.LastProductResponse{Name: "Welcome"}, nil
+	return &pb.LastProductResponse{Name: "Last lesson for golang"}, nil
 }
 
 func init() {

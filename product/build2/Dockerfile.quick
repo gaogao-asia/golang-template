@@ -1,6 +1,6 @@
 # Step 3: Final
 FROM scratch
 COPY ./config /config
-COPY ./build/productservice /productservice
+COPY ./build2/productservice /productservice
 # COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 CMD ["/productservice","-config","config"]

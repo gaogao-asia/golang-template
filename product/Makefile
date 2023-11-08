@@ -22,7 +22,7 @@ quickbuild:
 	@echo "> Build docker image"
 	@echo "----------------------------------------"
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ${OUTPUT}/build2/${SERVICENAME} ./main.go
-	docker build --no-cache --platform linux/arm64 -t ${SERVICENAME} -f ${OUTPUT}/build/Dockerfile.quick .
+	docker build --no-cache --platform linux/arm64 -t ${SERVICENAME} -f ${OUTPUT}/build2/Dockerfile.quick .
 	@echo ""
 	@echo "> List docker image"
 	@echo "----------------------------------------"
