@@ -9,6 +9,6 @@ gen:
 clean:
 	rm pd/*.go
 run:
-	go run main.go
+	go run main.go -config ./config
 
 .PHONY: setup gen clean run

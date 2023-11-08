@@ -1,0 +1,14 @@
+server:
+  port: ':8100'
+  name: 'product'
+database:
+  postgres:
+    host: 'localhost'
+    port: 54311
+    user: 'template'
+    dbname: 'templatedb'
+monitor:
+  opentelemetry:
+    enable: false
+  tempo:
+    endpoint: tempo:4317

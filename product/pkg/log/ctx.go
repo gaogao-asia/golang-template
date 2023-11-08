@@ -3,9 +3,10 @@ package log
 import (
 	"context"
 
-	"github.com/gaogao-asia/golang-template/config"
 	"github.com/lithammer/shortuuid"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/gaogao-asia/golang-catalog/config"
 )
 
 type CtxKey string
@@ -36,6 +37,7 @@ func AddUserIntoContext(ctx context.Context, userID string) context.Context {
 
 func InitTraceIntoContext(ctx context.Context) context.Context {
 	var traceID string
+
 	if config.AppConfig.Monitor.OpenTelemetry.Enable {
 		span := trace.SpanFromContext(ctx)
 		traceID = span.SpanContext().TraceID().String()
