@@ -2,6 +2,8 @@ module github.com/gaogao-asia/golang-template
 
 go 1.20
 
+replace github.com/gaogao-asia/golang-catalog/pb => ../product/pb
+
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.9.1
